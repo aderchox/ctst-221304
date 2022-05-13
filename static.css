@@ -1,0 +1,186 @@
+@font-face {
+    src: url('./fonts/shabnam.woff') format('woff');
+    font-family: Shabnam;
+    font-weight: normal;
+}
+
+@font-face {
+    src: url('./fonts/shabnam-bold.woff') format('woff');
+    font-family: Shabnam;
+    font-weight: bold;
+}
+
+:root {
+    --color--body-background: hsl(220, 50%, 5%);
+    --color--body-foreground: hsl(0, 0%, 90%);
+
+    --color--nav-button-foreground: hsl(220, 20%, 40%);
+    --color--nav-button-foreground--active: hsl(220, 20%, 70%);
+    --color--nav-border: hsl(220, 50%, 25%, 0.3);
+
+    --color--info-description: hsl(0, 0%, 90%, 0.7);
+}
+
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+
+    box-sizing: border-box;
+}
+
+html {
+    font-family: Poppins, Shabnam, sans-serif;
+}
+
+body {
+    background-color: var(--color--body-background);
+    color: var(--color--body-foreground);
+
+    display: flex;
+
+    min-height: 100vh;
+}
+
+nav {
+    --spacing: 4rem;
+
+    display: grid;
+
+    padding: var(--spacing);
+
+    border-inline-end: 1px solid var(--color--nav-border);
+}
+
+nav button {
+    background-color: transparent;
+    color: var(--color--nav-button-foreground);
+
+    border: none;
+
+    font-family: monospace;
+    font-size: 1.8rem;
+    text-decoration: none;
+
+    cursor: pointer;
+}
+
+nav button:hover,
+nav button.active {
+    color: var(--color--nav-button-foreground--active);
+}
+
+nav > * {
+    grid-area: 1 / 1 / 1 / 1;
+}
+
+nav > button {
+    align-self: start;
+}
+
+nav > button > svg {
+    fill: currentColor;
+}
+
+nav > ul {
+    align-self: center;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    gap: var(--spacing);
+
+    list-style: none;
+}
+
+main {
+    flex: 1;
+
+    display: grid;
+    grid-template-columns: 1fr repeat(4, 0.8fr) 1fr;
+}
+
+main > .info {
+    grid-area: 1 / 1 / 2 / 4;
+
+    z-index: 1;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    min-width: 40rem;
+
+    padding-inline: 4rem;
+}
+
+main > .info > span {
+    color: var(--color--info-description);
+
+    font-size: 0.8rem;
+    text-transform: uppercase;
+}
+
+main > .info > h2 {
+    margin-block-end: 1rem;
+
+    font-size: 3rem;
+    line-height: 1;
+    text-transform: uppercase;
+}
+
+main > .info > p {
+    color: var(--color--info-description);
+
+    margin-block-end: 3rem;
+
+    text-transform: capitalize;
+}
+
+main > .info > button {
+    min-width: 8rem;
+    width: fit-content;
+
+    padding: 0.8rem 1rem;
+
+    border: none;
+    border-radius: 2px;
+
+    font-size: 1rem;
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+[dir='rtl'] main > .cover {
+    transform: scaleX(-1);
+}
+
+main > .cover {
+    grid-area: 1 / 2 / 2 / -1;
+
+    position: relative;
+}
+
+main > .cover::after {
+    content: '';
+
+    background-image: linear-gradient(
+        to right,
+        var(--color--body-background),
+        transparent 50%,
+        transparent 70%,
+        var(--color--body-background)
+    );
+
+    position: absolute;
+    inset: 0;
+}
+
+main > .cover > img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}

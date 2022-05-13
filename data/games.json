@@ -1,0 +1,34 @@
+[
+    {
+        "name": "Red Dead Redemption 2",
+        "image": "./images/rdr2.jpg",
+        "callToActionButton": {
+            "backgroundColor": "hsl(356deg 95% 31%)",
+            "color": "black"
+        }
+    },
+    {
+        "name": "Horizon Zero Dawn",
+        "image": "./images/horizon.jpg",
+        "callToActionButton": {
+            "backgroundColor": "hsl(212, 58%, 67%)",
+            "color": "black"
+        }
+    },
+    {
+        "name": "God of War",
+        "image": "./images/god-of-war.jpg",
+        "callToActionButton": {
+            "backgroundColor": "hsl(200deg 20% 32%)",
+            "color": "hsl(180deg 90% 92%)"
+        }
+    },
+    {
+        "name": "Dota 2",
+        "image": "./images/dota2.jpg",
+        "callToActionButton": {
+            "backgroundColor": "hsl(251deg 41% 52%)",
+            "color": "white"
+        }
+    }
+]

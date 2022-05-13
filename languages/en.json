@@ -1,0 +1,23 @@
+{
+    "GENERAL": {
+        "CALL_TO_ACTION": "Let's Play!"
+    },
+    "GAMES": [
+        {
+            "HEADING": "epic tale of life in America's unforgiving heartland",
+            "DESCRIPTION": "America, 1899. The end of the Wild West era has begun. After a robbery goes badly wrong in the western town of Blackwater, Arthur Morgan and the Van der Linde gang are forced to flee. As deepening internal divisions threaten to tear the gang apart, Arthur must make a choice between his own ideals and loyalty to the gang who raised him."
+        },
+        {
+            "HEADING": "Join Aloy as she braves the Forbidden West",
+            "DESCRIPTION": "Explore distant lands, fight bigger and more awe-inspiring machines, and encounter astonishing new tribes as you return to the far-future, post-apocalyptic world of Horizon."
+        },
+        {
+            "HEADING": "A bold new beginning",
+            "DESCRIPTION": "This staggering reimagining of God of War combines all the hallmarks of the iconic series – brutal combat, epic boss fights, and breathtaking scale – and fuses them with a powerful and moving narrative that re-establishes Kratos’ world."
+        },
+        {
+            "HEADING": "A MODERN MULTIPLAYER MASTERPIECE",
+            "DESCRIPTION": "Every day, millions of players worldwide enter the battle as one of over a hundred Dota Heroes in a 5v5 team clash. Dota is the deepest multi-player action RTS game ever made and there's always a new strategy or tactic to discover. It's completely free to play and always will be."
+        }
+    ]
+}
