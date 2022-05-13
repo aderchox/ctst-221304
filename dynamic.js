@@ -1,91 +1,74 @@
+const enLang = {
+  name: "en",
+  dir: "ltr",
+};
+
+const faLang = {
+  name: "fa",
+  dir: "rtl",
+};
+
+// Default lang (on first run) will be enLang (English)
+let currentLang = enLang;
+
 document.querySelector("nav > button").addEventListener("click", () => {
-  const currentLang = localStorage.getItem("lang");
-  if (currentLang === "en") {
-    localStorage.setItem("lang", "fa");
-  } else if (currentLang === "fa") {
-    localStorage.setItem("lang", "en");
+  console.log("currentLang", currentLang);
+  if (currentLang?.name === "en") {
+    currentLang = faLang;
+  } else if (currentLang?.name === "fa") {
+    currentLang = enLang;
   } else {
-    localStorage.setItem("lang", "fa");
+    console.error("invalid langauge requested");
   }
-  activateGame();
+
+  activate();
   return;
 });
 
-function getLang() {
-  const currentLang = localStorage.getItem("lang");
-  if (!currentLang) {
-    localStorage.setItem("lang", "en");
-    return "en";
-  } else return localStorage.getItem("lang");
-}
+// function getLang() {
+//   const currentLang = localStorage.getItem("lang");
+//   if (!currentLang) {
+//     localStorage.setItem("lang", enLang);
+//     return enLang;
+//   } else return localStorage.getItem("lang");
+// }
 
-let gamesElems = {
-  en: [],
-  fa: [],
-};
-let gamesContents = { en: {}, fa: {} };
+let gameElem = null;
+let gamesContents = null;
 
 async function initData() {
-  let games = null;
+  let game = null,
+    games;
   games = await fetch("./data/games.json");
   games = await games.json();
+  game = games[getActiveGameBtnIdx()];
 
-  const gamesContentsJsons = await Promise.all([
-    fetch("./languages/en.json").then((resp) => resp.json()),
-    fetch("./languages/fa.json").then((resp) => resp.json()),
-  ]);
+  await fetch(`./languages/${currentLang.name}.json`).then(
+    async (resp) => (gamesContents = await resp.json())
+  );
 
-  gamesContents.en = gamesContentsJsons[0];
-  gamesContents.fa = gamesContentsJsons[1];
-
-  for (const [idx, game] of games.entries()) {
-    gameEnElem = createGameElemByLanguage(game, idx, "en");
-    gameFaElem = createGameElemByLanguage(game, idx, "fa");
-
-    gamesElems.en.push(gameEnElem);
-    gamesElems.fa.push(gameFaElem);
-  }
+  gameElem = createGameElem(game);
 }
 
-function createGameElemByLanguage(game, gameIdx, lang) {
+function createGameElem(game) {
   const main = document.createElement("main");
+  main.innerHTML = `<div class="info">
+  <span>${game.name}</span>
+  <h2>${gamesContents?.GAMES[getActiveGameBtnIdx()].HEADING}</h2>
+  <p>${gamesContents?.GAMES[getActiveGameBtnIdx()].DESCRIPTION}</p>
+  <button>${gamesContents?.GENERAL?.CALL_TO_ACTION}</button>
+</div>
 
-  // create no-lang-difference elems:
-  const gameInfo = document.createElement("div");
-  gameInfo.classList.add("info");
-
-  const gameNameSpan = document.createElement("span");
-  gameNameSpan.innerHTML = game.name;
-
-  const gameCoverDiv = document.createElement("div");
-  const coverImg = document.createElement("img");
-  coverImg.src = game.image;
-  gameCoverDiv.appendChild(coverImg);
-  gameCoverDiv.classList.add("cover");
-
-  // create lang-difference elems here:
-  const gameContentHeadingEn = document.createElement("h2");
-  gameContentHeadingEn.innerHTML =
-    gamesContents[lang]["GAMES"][gameIdx]?.HEADING;
-
-  const gameContentPEn = document.createElement("p");
-  gameContentPEn.innerHTML = gamesContents[lang]["GAMES"][gameIdx]?.DESCRIPTION;
-
-  const gameContentBtn = document.createElement("button");
-  gameContentBtn.innerHTML = gamesContents[lang].GENERAL.CALL_TO_ACTION;
-
-  gameInfo.appendChild(gameNameSpan);
-  gameInfo.appendChild(gameContentHeadingEn);
-  gameInfo.appendChild(gameContentPEn);
-  gameInfo.appendChild(gameContentBtn);
-  main.appendChild(gameInfo);
-  main.appendChild(gameCoverDiv);
-
+<div class="cover">
+  <img src="${game.image}" />
+</div>
+`;
   return main;
 }
 
 function initEvents() {
   const gameButtons = document.querySelectorAll("nav ul li button");
+
   for (const [idx, gameBtn] of gameButtons.entries()) {
     gameBtn.addEventListener("click", () => {
       gameButtons.forEach((gameBtn, i) => {
@@ -96,23 +79,17 @@ function initEvents() {
         }
       });
 
-      activateGame();
+      activate();
     });
   }
 }
 
-function activateGame() {
+async function activate() {
+  await initData();
   const htmlElem = document.documentElement;
-  const lang = getLang();
 
-  if (lang === "en") {
-    htmlElem.dir = "ltr";
-  } else if (lang === "fa") {
-    htmlElem.dir = "rtl";
-  }
-  htmlElem.lang = lang;
-
-  const gameElem = gamesElems[lang][getActiveGameBtnIdx()];
+  htmlElem.lang = currentLang.name;
+  htmlElem.lang = currentLang.dir;
 
   const main = document.querySelector("main");
   main.innerHTML = gameElem.innerHTML;
@@ -125,9 +102,8 @@ function getActiveGameBtnIdx() {
 }
 
 init = async () => {
-  await initEvents();
-  await initData();
-  activateGame();
+  await activate();
+  initEvents();
 };
 
 init();
