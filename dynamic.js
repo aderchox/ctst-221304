@@ -89,7 +89,7 @@ async function activate() {
   const htmlElem = document.documentElement;
 
   htmlElem.lang = currentLang.name;
-  htmlElem.lang = currentLang.dir;
+  htmlElem.dir = currentLang.dir;
 
   const main = document.querySelector("main");
   main.innerHTML = gameElem.innerHTML;
