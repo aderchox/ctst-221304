@@ -8,15 +8,21 @@ const faLang = {
   dir: "rtl",
 };
 
-// Default lang (on first run) will be enLang (English)
-let currentLang = enLang;
+function getLang() {
+  const currentLang = JSON.parse(localStorage.getItem("lang"));
+  if (!currentLang) {
+    // Default lang (on first run) will be enLang (English)
+    localStorage.setItem("lang", JSON.stringify(enLang));
+    return enLang;
+  } else return currentLang;
+}
 
 document.querySelector("nav > button").addEventListener("click", () => {
-  console.log("currentLang", currentLang);
+  const currentLang = getLang();
   if (currentLang?.name === "en") {
-    currentLang = faLang;
+    localStorage.setItem("lang", JSON.stringify(faLang));
   } else if (currentLang?.name === "fa") {
-    currentLang = enLang;
+    localStorage.setItem("lang", JSON.stringify(enLang));
   } else {
     console.error("invalid langauge requested");
   }
@@ -24,14 +30,6 @@ document.querySelector("nav > button").addEventListener("click", () => {
   activate();
   return;
 });
-
-// function getLang() {
-//   const currentLang = localStorage.getItem("lang");
-//   if (!currentLang) {
-//     localStorage.setItem("lang", enLang);
-//     return enLang;
-//   } else return localStorage.getItem("lang");
-// }
 
 let gameElem = null;
 let gamesContents = null;
@@ -43,7 +41,7 @@ async function initData() {
   games = await games.json();
   game = games[getActiveGameBtnIdx()];
 
-  await fetch(`./languages/${currentLang.name}.json`).then(
+  await fetch(`./languages/${getLang()?.name}.json`).then(
     async (resp) => (gamesContents = await resp.json())
   );
 
@@ -88,8 +86,9 @@ async function activate() {
   await initData();
   const htmlElem = document.documentElement;
 
-  htmlElem.lang = currentLang.name;
-  htmlElem.dir = currentLang.dir;
+  const currentLang = getLang();
+  htmlElem.lang = currentLang?.name;
+  htmlElem.dir = currentLang?.dir;
 
   const main = document.querySelector("main");
   main.innerHTML = gameElem.innerHTML;
