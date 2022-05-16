@@ -1,0 +1,45 @@
+:root {
+    --color--body-background: hsl(220, 50%, 5%);
+    --color--body-foreground: hsl(0, 0%, 90%);
+
+    --color--checkmark-background: hsl(220, 50%, 5%, 0.8);
+    --color--checkmark-foreground: hsl(0, 0%, 90%);
+}
+
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+
+    box-sizing: border-box;
+}
+
+html {
+    font-family: Poppins, sans-serif;
+}
+
+body {
+    background-color: var(--color--body-background);
+    color: var(--color--body-foreground);
+
+    max-width: 100rem;
+    min-height: 100vh;
+
+    margin: auto;
+    padding: 2rem;
+}
+
+h1 {
+    margin-block-end: 2rem;
+
+    font-size: 2.4rem;
+}
+
+ul > li {
+    overflow: hidden;
+}
+
+ul > li > label > img {
+    transition: transform 0.25s linear;
+}
