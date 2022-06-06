@@ -1,53 +1,68 @@
-const enLanguage = {
-  name: "en",
-  dir: "ltr",
-};
-
-const faLanguage = {
-  name: "fa",
-  dir: "rtl",
-};
-
 function getLanguage() {
-  const currentLanguage = JSON.parse(localStorage.getItem("language"));
+  const english = "english";
+  const currentLanguage = localStorage.getItem("language");
   if (!currentLanguage) {
-    // Default language (on first run) will be enLanguage (English)
-    localStorage.setItem("language", JSON.stringify(enLanguage));
-    return enLanguage;
+    // Default language (on first run) will be English.
+    localStorage.setItem("language", english);
+    return english;
   } else {
     return currentLanguage;
   }
 }
 
-async function initializeData() {
+async function initializeData(languageURIMap) {
   let gamesContents = null;
 
   const gamesResponse = await fetch("./data/games.json");
   const gamesData = await gamesResponse.json();
   const game = gamesData[getActiveGameButtonIndex()];
 
-  await fetch(`./languages/${getLanguage()?.name}.json`).then(
+  const uri = languageURIMap[getLanguage()];
+  await fetch(`./languages/${uri}.json`).then(
     async (response) => (gamesContents = await response.json())
   );
 
-  const gameElement = createGameElement(game, gamesContents);
-  return gameElement;
+  const gameFragment = createGameFragment(game, gamesContents);
+  return gameFragment;
 }
 
-function createGameElement(game, gamesContents) {
-  const main = document.createElement("main");
-  main.innerHTML = `<div class="info">
-  <span>${game.name}</span>
-  <h2>${gamesContents?.GAMES[getActiveGameButtonIndex()].HEADING}</h2>
-  <p>${gamesContents?.GAMES[getActiveGameButtonIndex()].DESCRIPTION}</p>
-  <button>${gamesContents?.GENERAL?.CALL_TO_ACTION}</button>
-</div>
+function createGameFragment(game, gamesContents) {
+  const fragment = document.createDocumentFragment();
 
-<div class="cover">
-  <img src="${game.image}" />
-</div>
-`;
-  return main;
+  const div = document.createElement("div");
+  div.classList.add("info");
+  const span = document.createElement("span");
+  span.textContent = `${game.name}`;
+  const h2 = document.createElement("h2");
+  h2.textContent = `${
+    gamesContents?.GAMES[getActiveGameButtonIndex()].HEADING
+  }`;
+  const p = document.createElement("p");
+  p.textContent = `${
+    gamesContents?.GAMES[getActiveGameButtonIndex()].DESCRIPTION
+  }`;
+  const button = document.createElement("button");
+  button.textContent = `${gamesContents?.GENERAL?.CALL_TO_ACTION}`;
+  [span, h2, p, button].forEach((child) => div.appendChild(child));
+
+  const div2 = document.createElement("div");
+  div2.classList.add("cover");
+  const img = document.createElement("img");
+  img.src = `${game.image}`;
+  div2.appendChild(img);
+
+  [div, div2].forEach((child) => fragment.appendChild(child));
+
+  return fragment;
+}
+
+function createHtmlFromString(stringHtml) {
+  const parser = new DOMParser();
+  const htmlFragment = document.createDocumentFragment();
+  const children = parser.parseFromString(stringHtml, "text/html").body
+    .children;
+  htmlFragment.replaceChildren(children);
+  return htmlFragment;
 }
 
 function initEvents() {
@@ -58,10 +73,10 @@ function initEvents() {
 function initializeChangeLanguageEvent() {
   document.querySelector("nav > button").addEventListener("click", () => {
     const currentLanguage = getLanguage();
-    if (currentLanguage?.name === "en") {
-      localStorage.setItem("language", JSON.stringify(faLanguage));
-    } else if (currentLanguage?.name === "fa") {
-      localStorage.setItem("language", JSON.stringify(enLanguage));
+    if (currentLanguage === "english") {
+      localStorage.setItem("language", "farsi");
+    } else if (currentLanguage === "farsi") {
+      localStorage.setItem("language", "english");
     } else {
       console.error("invalid langauge requested");
     }
@@ -93,15 +108,18 @@ function initializeGameButtonsEvents() {
 }
 
 async function activate() {
-  const gameElement = await initializeData();
-  const htmlElem = document.documentElement;
+  const gameFragment = await initializeData({
+    english: "en",
+    farsi: "fa",
+  });
+  const htmlElement = document.documentElement;
 
   const currentLanguage = getLanguage();
-  htmlElem.lang = currentLanguage?.name;
-  htmlElem.dir = currentLanguage?.dir;
+  htmlElement.lang = currentLanguage;
+  htmlElement.dir = currentLanguage === "english" ? "ltr" : "rtl";
 
   const main = document.querySelector("main");
-  main.innerHTML = gameElement.innerHTML;
+  main.replaceChildren(gameFragment);
 }
 
 function getActiveGameButtonIndex() {
