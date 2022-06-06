@@ -1,3 +1,5 @@
+// @ts-check
+
 function getLanguage() {
   const english = "english";
   const currentLanguage = localStorage.getItem("language");
@@ -29,29 +31,17 @@ async function initializeData(languageURIMap) {
 function createGameFragment(game, gamesContents) {
   const fragment = document.createDocumentFragment();
 
-  const div = document.createElement("div");
-  div.classList.add("info");
-  const span = document.createElement("span");
-  span.textContent = `${game.name}`;
-  const h2 = document.createElement("h2");
-  h2.textContent = `${
-    gamesContents?.GAMES[getActiveGameButtonIndex()].HEADING
-  }`;
-  const p = document.createElement("p");
-  p.textContent = `${
-    gamesContents?.GAMES[getActiveGameButtonIndex()].DESCRIPTION
-  }`;
-  const button = document.createElement("button");
-  button.textContent = `${gamesContents?.GENERAL?.CALL_TO_ACTION}`;
-  [span, h2, p, button].forEach((child) => div.appendChild(child));
-
-  const div2 = document.createElement("div");
-  div2.classList.add("cover");
-  const img = document.createElement("img");
-  img.src = `${game.image}`;
-  div2.appendChild(img);
-
-  [div, div2].forEach((child) => fragment.appendChild(child));
+  const htmlFragment = createHtmlFromString(`<div class="info">
+      <span>${game.name}</span>
+      <h2>${gamesContents?.GAMES[getActiveGameButtonIndex()].HEADING}</h2>
+      <p>${gamesContents?.GAMES[getActiveGameButtonIndex()].DESCRIPTION}</p>
+      <button>${gamesContents?.GENERAL?.CALL_TO_ACTION}</button>
+    </div>
+    <div class="cover">
+      <img src="${game.image}" />
+    </div>
+  `);
+  fragment.replaceChildren(htmlFragment);
 
   return fragment;
 }
@@ -61,7 +51,7 @@ function createHtmlFromString(stringHtml) {
   const htmlFragment = document.createDocumentFragment();
   const children = parser.parseFromString(stringHtml, "text/html").body
     .children;
-  htmlFragment.replaceChildren(children);
+  htmlFragment.replaceChildren(...children);
   return htmlFragment;
 }
 
@@ -128,7 +118,7 @@ function getActiveGameButtonIndex() {
   );
 }
 
-init = async () => {
+const init = async () => {
   await activate();
   initEvents();
 };
