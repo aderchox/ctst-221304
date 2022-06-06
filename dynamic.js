@@ -32,15 +32,25 @@ function createGameFragment(game, gamesContents) {
   const fragment = document.createDocumentFragment();
 
   const htmlFragment = createHtmlFromString(`<div class="info">
-      <span>${game.name}</span>
-      <h2>${gamesContents?.GAMES[getActiveGameButtonIndex()].HEADING}</h2>
-      <p>${gamesContents?.GAMES[getActiveGameButtonIndex()].DESCRIPTION}</p>
-      <button>${gamesContents?.GENERAL?.CALL_TO_ACTION}</button>
+      <span></span>
+      <h2></h2>
+      <p></p>
+      <button></button>
     </div>
     <div class="cover">
-      <img src="${game.image}" />
+      <img />
     </div>
   `);
+
+  htmlFragment.querySelector(".info > span").textContent = game.name;
+  htmlFragment.querySelector(".info > h2").textContent =
+    gamesContents?.GAMES[getActiveGameButtonIndex()].HEADING;
+  htmlFragment.querySelector(".info > p").textContent =
+    gamesContents?.GAMES[getActiveGameButtonIndex()].DESCRIPTION;
+  htmlFragment.querySelector(".info > button").textContent =
+    gamesContents?.GENERAL?.CALL_TO_ACTION;
+  htmlFragment.querySelector(".cover > img").setAttribute("src", game.image);
+
   fragment.replaceChildren(htmlFragment);
 
   return fragment;
